@@ -1,2 +1,3 @@
-# contact-manager-api
-Serverless API that uses Azure Cosmos DB and Azure Functions HTTP Triggers
+# Contact Manager API Sample
+
+A Serverless HTTP API that uses Cosmos DB as a database. Currently, CRUD operations are implemented.
