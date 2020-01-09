@@ -82,7 +82,7 @@ namespace ContactManagerAPI.Functions
             {
                 ItemResponse<Contact> contactResponse = await contactContainer.CreateItemAsync(
                     contact,
-                    new PartitionKey(contact.ContactType));
+                    new PartitionKey(contact.ContactType));         
                 returnValue = new OkObjectResult(contactResponse);
             }
             catch (Exception ex)
