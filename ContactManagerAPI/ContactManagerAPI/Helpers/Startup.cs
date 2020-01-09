@@ -27,7 +27,7 @@ namespace ContactManagerAPI.Helpers
 
             builder.Services.AddSingleton((s) => 
             {
-                CosmosClientBuilder cosmosClientBuilder = new CosmosClientBuilder(Settings.COSMOS_DB_CONNECTION_STRING);
+                CosmosClientBuilder cosmosClientBuilder = new CosmosClientBuilder(config[Settings.COSMOS_DB_CONNECTION_STRING]);
 
                 return cosmosClientBuilder.WithConnectionModeDirect()
                     .Build();
