@@ -21,8 +21,8 @@ namespace ContactManagerAPI.Functions
         private readonly CosmosClient _cosmosClient;
         private readonly IConfiguration _config;
 
-        private Database contactDatabase;
-        private Container contactContainer;
+        private Database _contactDatabase;
+        private Container _contactContainer;
 
         public DeleteContact(
             ILogger<DeleteContact> logger,
@@ -33,8 +33,8 @@ namespace ContactManagerAPI.Functions
             _cosmosClient = cosmosClient;
             _config = config;
 
-            contactDatabase = _cosmosClient.GetDatabase(_config[Settings.DATABASE_NAME]);
-            contactContainer = contactDatabase.GetContainer(_config[Settings.CONTAINER_NAME]);
+            _contactDatabase = _cosmosClient.GetDatabase(_config[Settings.DATABASE_NAME]);
+            _contactContainer = _contactDatabase.GetContainer(_config[Settings.CONTAINER_NAME]);
         }
 
         [FunctionName(nameof(DeleteContact))]
@@ -47,10 +47,10 @@ namespace ContactManagerAPI.Functions
             try
             {
                 QueryDefinition getContactQueryDefinition = new QueryDefinition(
-                    $"SELECT * FROM {contactContainer.Id} c WHERE c.id = @id")
+                    $"SELECT * FROM {_contactContainer.Id} c WHERE c.id = @id")
                     .WithParameter("@id", id);
 
-                FeedIterator<Contact> getResultSet = contactContainer.GetItemQueryIterator<Contact>
+                FeedIterator<Contact> getResultSet = _contactContainer.GetItemQueryIterator<Contact>
                     (
                         getContactQueryDefinition,
                         requestOptions: new QueryRequestOptions()
@@ -63,7 +63,7 @@ namespace ContactManagerAPI.Functions
                 {
                     FeedResponse<Contact> response = await getResultSet.ReadNextAsync();
                     Contact contact = response.First();
-                    ItemResponse<Contact> itemResponse = await contactContainer.DeleteItemAsync<Contact>
+                    ItemResponse<Contact> itemResponse = await _contactContainer.DeleteItemAsync<Contact>
                         (id: id, partitionKey: new PartitionKey(contact.ContactType));
                     returnValue = new OkResult();
                 }

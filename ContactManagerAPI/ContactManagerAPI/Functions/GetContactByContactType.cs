@@ -20,8 +20,8 @@ namespace ContactManagerAPI.Functions
         private readonly CosmosClient _cosmosClient;
         private readonly IConfiguration _config;
 
-        private Database contactDatabase;
-        private Container contactContainer;
+        private Database _contactDatabase;
+        private Container _contactContainer;
 
         public GetContactByContactType(
             ILogger<GetContactByContactType> logger,
@@ -32,8 +32,8 @@ namespace ContactManagerAPI.Functions
             _cosmosClient = cosmosClient;
             _config = config;
 
-            contactDatabase = _cosmosClient.GetDatabase(_config[Settings.DATABASE_NAME]);
-            contactContainer = contactDatabase.GetContainer(_config[Settings.CONTAINER_NAME]);
+            _contactDatabase = _cosmosClient.GetDatabase(_config[Settings.DATABASE_NAME]);
+            _contactContainer = _contactDatabase.GetContainer(_config[Settings.CONTAINER_NAME]);
         }
 
         [FunctionName(nameof(GetContactByContactType))]
@@ -46,10 +46,10 @@ namespace ContactManagerAPI.Functions
             try
             {
                 QueryDefinition query = new QueryDefinition(
-                    $"SELECT * FROM {contactContainer.Id} c WHERE c.ContactType = @ContactType")
+                    $"SELECT * FROM {_contactContainer.Id} c WHERE c.ContactType = @ContactType")
                     .WithParameter("@ContactType", contactType);
 
-                FeedIterator<Contact> resultSet = contactContainer.GetItemQueryIterator<Contact>(
+                FeedIterator<Contact> resultSet = _contactContainer.GetItemQueryIterator<Contact>(
                     query,
                     requestOptions: new QueryRequestOptions()
                     {

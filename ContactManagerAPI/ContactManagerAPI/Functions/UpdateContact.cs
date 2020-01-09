@@ -21,8 +21,8 @@ namespace ContactManagerAPI.Functions
         private readonly CosmosClient _cosmosClient;
         private readonly IConfiguration _config;
 
-        private Database contactDatabase;
-        private Container contactContainer;
+        private Database _contactDatabase;
+        private Container _contactContainer;
 
         public UpdateContact(
             ILogger<UpdateContact> logger,
@@ -33,8 +33,8 @@ namespace ContactManagerAPI.Functions
             _cosmosClient = cosmosClient;
             _config = config;
 
-            contactDatabase = _cosmosClient.GetDatabase(_config[Settings.DATABASE_NAME]);
-            contactContainer = contactDatabase.GetContainer(_config[Settings.CONTAINER_NAME]);
+            _contactDatabase = _cosmosClient.GetDatabase(_config[Settings.DATABASE_NAME]);
+            _contactContainer = _contactDatabase.GetContainer(_config[Settings.CONTAINER_NAME]);
         }
 
         [FunctionName(nameof(UpdateContact))]
@@ -53,10 +53,10 @@ namespace ContactManagerAPI.Functions
             try
             {
                 QueryDefinition getContactQueryDefinition = new QueryDefinition(
-                    $"SELECT * FROM {contactContainer.Id} c WHERE c.id = @id")
+                    $"SELECT * FROM {_contactContainer.Id} c WHERE c.id = @id")
                     .WithParameter("@id", id);
 
-                FeedIterator<Contact> getResultSet = contactContainer.GetItemQueryIterator<Contact>
+                FeedIterator<Contact> getResultSet = _contactContainer.GetItemQueryIterator<Contact>
                     (
                         getContactQueryDefinition,
                         requestOptions: new QueryRequestOptions()
@@ -76,9 +76,9 @@ namespace ContactManagerAPI.Functions
                         returnValue = new StatusCodeResult(StatusCodes.Status404NotFound);
                     }
 
-                    var oldItem = await contactContainer.ReadItemAsync<Contact>(id, new PartitionKey(contact.ContactType));
+                    var oldItem = await _contactContainer.ReadItemAsync<Contact>(id, new PartitionKey(contact.ContactType));
 
-                    var replaceContact = await contactContainer.ReplaceItemAsync(updatedContact, oldItem.Resource.ContactId, new PartitionKey(oldItem.Resource.ContactType));
+                    var replaceContact = await _contactContainer.ReplaceItemAsync(updatedContact, oldItem.Resource.ContactId, new PartitionKey(oldItem.Resource.ContactType));
 
                     returnValue = new OkObjectResult(replaceContact);
 
