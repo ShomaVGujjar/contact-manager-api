@@ -1,0 +1,11 @@
+﻿{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "CosmosDBConnection": "AccountEndpoint=https://azfuncspikedb.documents.azure.com:443/;AccountKey=CuVJ8Z0E7nrhX5Md4a90spLxgsa55mOyJCljhbLGJ7Y3KLtlAbJGbtMEs9erzBuqyOeVSoz5RFeRACDbsqSDNQ==;",
+    "CosmosDBName": "ContactsApi",
+    "CosmosDBContainerName": "contacts",
+    "CosmosDBPartitionKey": "/Id"
+  }
+}
